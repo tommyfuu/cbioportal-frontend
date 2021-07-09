@@ -739,6 +739,7 @@ export default class LollipopMutationPlot<
                     onMouseEnter={this.handlers.onMouseEnterPlot}
                     onMouseLeave={this.handlers.onMouseLeavePlot}
                 >
+                    Hello world
                     <LollipopMutationPlotControls
                         showControls={this.showControls}
                         showYMaxSlider={this.props.showYMaxSlider}

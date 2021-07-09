@@ -22,6 +22,7 @@ import {
     updatePositionSelectionFilters,
 } from '../../util/FilterUtils';
 import TrackCircle, { TrackItemSpec } from './TrackCircle';
+import TrackRect, { TrackRectSpec } from './TrackRect';
 
 import styles from './trackStyles.module.scss';
 
@@ -32,6 +33,7 @@ export type TrackProps = {
     width: number;
     proteinLength: number;
     trackItems?: TrackItemSpec[];
+    trackRect?: TrackRectSpec[];
     trackTitle?: JSX.Element;
     hideBaseline?: boolean;
     xOffset?: number;
@@ -46,6 +48,7 @@ export default class Track extends React.Component<TrackProps, {}> {
     private tooltipActive = false;
 
     private circles: { [index: string]: TrackCircle };
+    private rects: { [index: string]: TrackRect };
 
     constructor(props: TrackProps) {
         super(props);
@@ -199,8 +202,9 @@ export default class Track extends React.Component<TrackProps, {}> {
 
     get items() {
         this.circles = {};
+        this.rects = {};
 
-        return (this.props.trackItems || []).map((spec, index) => {
+        const circle = (this.props.trackItems || []).map((spec, index) => {
             return (
                 <TrackCircle
                     ref={(circle: TrackCircle) => {
@@ -227,6 +231,26 @@ export default class Track extends React.Component<TrackProps, {}> {
                 />
             );
         });
+        const rect = (this.props.trackRect || []).map((spec, index) => {
+            return (
+                <TrackRect
+                    ref={(rect: TrackRect) => {
+                        if (rect !== null) {
+                            this.rects[index] = rect;
+                        }
+                    }}
+                    key={spec.start}
+                    hitZoneClassName={`${this.props.idClassPrefix}${index}`}
+                    hitZoneXOffset={this.props.xOffset}
+                    x={spec.start}
+                    y={this.svgHeight / 2}
+                    width={spec.rectWidth}
+                    height={50}
+                    spec={spec}
+                />
+            );
+        });
+        return [...circle, ...rect];
     }
 
     @action
